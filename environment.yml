@@ -1,0 +1,34 @@
+name: cemantix_solver
+
+channels:
+  - conda-forge
+  - pytorch
+
+dependencies:
+  - python=3.9
+  - jupyterlab
+  - jupyter_console
+
+  ## Development tools
+  - black
+  - flake8
+  - isort
+  - pytest
+  - colorlog
+
+  ## Data engineering
+  - pandas
+  - tqdm
+
+  ## Machine Learning
+  - gensim
+
+  ## Data viz
+  - seaborn
+  - plotly
+
+  ## I/O
+  - requests
+
+  ## PIP packages
+  - pip

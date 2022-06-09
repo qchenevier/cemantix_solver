@@ -23,12 +23,9 @@ dependencies:
   ## Machine Learning
   - gensim
 
-  ## Data viz
-  - seaborn
-  - plotly
-
   ## I/O
   - requests
+  - ipywidgets
 
   ## PIP packages
   - pip

@@ -5,27 +5,24 @@ channels:
   - pytorch
 
 dependencies:
-  - python=3.9
-  - jupyterlab
-  - jupyter_console
+  - python=3.9.13
+  - jupyterlab=3.4.2
+  - jupyter_console=6.4.3
 
   ## Development tools
-  - black
-  - flake8
-  - isort
-  - pytest
-  - colorlog
+  - black=22.3.0
+  - colorlog=6.6.0
+  - flake8=4.0.1
+  - isort=5.10.1
+  - pytest=7.1.2
 
   ## Data engineering
-  - pandas
-  - tqdm
+  - tqdm=4.64.0
+  - pandas=1.4.2
 
   ## Machine Learning
-  - gensim
+  - gensim=4.2.0
 
   ## I/O
-  - requests
-  - ipywidgets
-
-  ## PIP packages
-  - pip
+  - requests=2.27.1
+  - ipywidgets=7.7.0

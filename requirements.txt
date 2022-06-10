@@ -3,3 +3,4 @@ pandas==1.*
 gensim==4.*
 requests==2.*
 ipywidgets==7.*
+voila==0.3.*

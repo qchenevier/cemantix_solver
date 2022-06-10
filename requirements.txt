@@ -1,0 +1,10 @@
+python==3.9
+jupyterlab==3.4
+black==22.3
+flake8==4.0
+isort==5.10
+tqdm==4.64
+pandas==1.4
+gensim==4.2
+requests==2.27
+ipywidgets==7.7

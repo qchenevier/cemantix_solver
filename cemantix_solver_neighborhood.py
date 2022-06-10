@@ -9,6 +9,8 @@ import requests
 from gensim.models import KeyedVectors
 from IPython.display import display
 from tqdm import tqdm
+import sys
+import numpy as np
 
 
 class DownloadProgressBar(tqdm):
@@ -19,18 +21,24 @@ class DownloadProgressBar(tqdm):
 
 
 def download_file(url, filename):
-    with DownloadProgressBar(
-        unit="B", unit_scale=True, miniters=1, desc=filename
-    ) as t:
-        urllib.request.urlretrieve(
-            url, filename=filename, reporthook=t.update_to
-        )
+    with output_download:
+        with DownloadProgressBar(
+            unit="B", unit_scale=True, miniters=1, desc=filename, file=sys.stdout
+        ) as t:
+            urllib.request.urlretrieve(
+                url, filename=filename, reporthook=t.update_to
+            )
 
 
 def download_if_not_present(url):
     filename = url.split("/")[-1]
     if not os.path.exists(filename):
         download_file(url, filename)
+        with output_download:
+            print("W2V file downloaded.")
+    else:
+        with output_download:
+            print("W2V file already present.")
     return filename
 
 
@@ -79,34 +87,10 @@ def add_random_word_to_scores(scores, vocab, model, cache):
         sample_score = get_score_from_word_key(sample.key, cache)
     return add_word_to_scores(sample.key, sample_score, scores, model)
 
-
 # %%
-word2vec_options = [
-    "frWac_non_lem_no_postag_no_phrase_200_cbow_cut0.bin",
-    "frWac_non_lem_no_postag_no_phrase_200_cbow_cut100.bin",
-    "frWac_non_lem_no_postag_no_phrase_200_skip_cut100.bin",
-    "frWac_non_lem_no_postag_no_phrase_500_skip_cut100.bin",
-    "frWac_non_lem_no_postag_no_phrase_500_skip_cut200.bin",
-    "frWac_no_postag_no_phrase_500_cbow_cut100.bin",
-    "frWac_no_postag_no_phrase_500_skip_cut100.bin",
-    "frWac_no_postag_no_phrase_700_skip_cut50.bin",
-    "frWac_postag_no_phrase_700_skip_cut50.bin",
-    "frWac_postag_no_phrase_1000_skip_cut100.bin",
-    "frWac_no_postag_phrase_500_cbow_cut10.bin",
-    "frWac_no_postag_phrase_500_cbow_cut100.bin",
-]
-widget_word2vec_file = widgets.Select(
-    options=word2vec_options,
-    value=word2vec_options[2],
-    rows=len(word2vec_options) + 1,
-    description="File:",
-    disabled=False,
-    layout={"width": "max-content"},
-)
-display(widget_word2vec_file)
-
-# %%
-url = f"https://embeddings.net/embeddings/{widget_word2vec_file.value}"
+url = "https://embeddings.net/embeddings/frWac_non_lem_no_postag_no_phrase_200_skip_cut100.bin"
+output_download = widgets.Output()
+display(output_download)
 embeddings_filename = download_if_not_present(url)
 
 # %%
@@ -120,19 +104,17 @@ vocab = pd.DataFrame({"key": model.index_to_key}).assign(
 )
 
 # %%
-widget_N_vocab = widgets.IntSlider(value=30000, min=0, max=vocab.shape[0])
+widget_N_vocab = widgets.FloatLogSlider(value=3000, min=0, max=np.log10(vocab.shape[0]))
 widget_N_neighborhood = widgets.IntSlider(value=300, min=0, max=1000)
-display(widgets.HBox([widgets.Label("Vocabulary size:"), widget_N_vocab]))
+display(widgets.HBox([widgets.Label("Vocabulary size (log scale):"), widget_N_vocab]))
 display(widgets.HBox([widgets.Label("Neighborhood search size:"), widget_N_neighborhood]))
 
 # %%
-N_vocab = widget_N_vocab.value
-N_neighborhood = widget_N_neighborhood.value
-vocab_selection = vocab.head(N_vocab)
-
-# %%
-
 def search(button):
+    N_vocab = int(widget_N_vocab.value)
+    N_neighborhood = widget_N_neighborhood.value
+    vocab_selection = vocab.head(N_vocab)
+    
     with output:
         print(f"Search start.")
     cache = dict()

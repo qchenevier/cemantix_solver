@@ -14,13 +14,19 @@ dependencies:
   - isort
 
   ## Data engineering
-  - tqdm=4
-  - pandas=1
+  - tqdm
+  - pandas
 
   ## Machine Learning
-  - gensim=4
+  - gensim
 
   ## I/O
-  - requests=2
-  - ipywidgets=7
-  - voila
+  - requests
+  - ipywidgets
+  
+  - markupsafe<2.1
+
+  ## pip
+  - pip
+  - pip:
+    - nbinteract
